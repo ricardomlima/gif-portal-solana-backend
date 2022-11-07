@@ -9,10 +9,17 @@ pub mod gif_portal_solana_backend {
     pub fn start_stuff_off(ctx: Context<StartStuffOff>) -> Result <()> {
 
         // Gets the account reference
-        let base_account = &mut ctx.accounts.base_account;
+        let base_account: &mut Account<BaseAccount> = &mut ctx.accounts.base_account;
 
         // Initializes total amount of gifs
         base_account.total_gifs = 0;
+        Ok(())
+    }
+
+    pub fn add_gif(ctx: Context<AddGif>) -> Result <()> {
+        // Obtains the account reference and increments to total_gifs
+        let base_account: &mut Account<BaseAccount> = &mut ctx.accounts.base_account;
+        base_account.total_gifs += 1;
         Ok(())
     }
 }
@@ -26,6 +33,12 @@ pub struct StartStuffOff<'info> {
     #[account(mut)]
     pub user: Signer<'info>,
     pub system_program: Program <'info, System>,
+}
+
+#[derive(Accounts)]
+pub struct AddGif<'info> {
+    #[account(mut)]
+    pub base_account: Account<'info, BaseAccount>,
 }
 
 // What do we want to store in the account
